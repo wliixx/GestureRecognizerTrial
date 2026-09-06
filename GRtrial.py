@@ -76,7 +76,7 @@ def main():
         ret, frame = cap.read()
         if not ret:
             break
-        
+        print(f"кадр прочитан: ret={ret}, frame is None: {frame is None}")
         
         frame = cv2.flip(frame,1)
         height, width, _ = frame.shape
@@ -118,4 +118,9 @@ def main():
  
  
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception:
+        import traceback
+        traceback.print_exc()
+        input("Нажми Enter, чтобы закрыть окно...")
