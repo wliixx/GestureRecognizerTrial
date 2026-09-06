@@ -1,4 +1,4 @@
-import cv2
+import cv2 
 import mediapipe as mp
 from mediapipe.tasks import python as mp_tasks
 from mediapipe.tasks.python import vision as mp_vision
@@ -78,7 +78,7 @@ def main():
             break
         
         
-        frame = cv2.flip(1)
+        frame = cv2.flip(frame,1)
         height, width, _ = frame.shape
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_frame)
