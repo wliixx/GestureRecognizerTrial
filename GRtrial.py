@@ -1,4 +1,5 @@
 import cv2 
+import time
 import mediapipe as mp
 from mediapipe.tasks import python as mp_tasks
 from mediapipe.tasks.python import vision as mp_vision
@@ -65,6 +66,7 @@ def draw_hand(frame, landmarks_px):
 
 def main():
     cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    time.sleep(0.5)
     
     if not cap.isOpened():
         print('Не удалось открыть камеру')
@@ -75,7 +77,8 @@ def main():
     while True:
         ret, frame = cap.read()
         if not ret:
-            break
+            print("Кадр не прочитан, пробуем ещё раз...")
+            continue   
         print(f"кадр прочитан: ret={ret}, frame is None: {frame is None}")
         
         frame = cv2.flip(frame,1)
