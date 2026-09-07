@@ -1,5 +1,6 @@
 import cv2 
 import time
+import math
 import mediapipe as mp
 from mediapipe.tasks import python as mp_tasks
 from mediapipe.tasks.python import vision as mp_vision
@@ -27,18 +28,24 @@ landmarker = mp_vision.HandLandmarker.create_from_options(options)
 
 TIP_IDS = [4, 8, 12, 16, 20]
 
+def distance(p_a, p_b):
+    return math.hypot(p_a.x - p_b.x, p_a.y - p_b.y)
+
 def count_fingers(landmarks, handedness_label):
     fingers = []
-    if handedness_label == 'Right':
-        fingers.append(1 if landmarks[TIP_IDS[0]].x > landmarks[TIP_IDS[0]-1].x else 0)
-    else:
-        fingers.append(1 if landmarks[TIP_IDS[0]].x < landmarks[TIP_IDS[0]-1].x else 0)
+    thumb_tip = landmarks[4]
+    index_mcp = landmarks[17]
+    t_i_d = distance(thumb_tip,index_mcp)
+    wrist = landmarks[0]
+    middle_mcp = landmarks[9]
+    hand_size = distance(wrist, middle_mcp)
+    THUMB_EXTENDED_RATIO = 0.8
+    fingers.append(1 if (t_i_d / hand_size)>THUMB_EXTENDED_RATIO else 0)
         
     for i in range(1,5):
         tip = TIP_IDS[i]
         pip_joint = tip - 2
         fingers.append(1 if landmarks[tip].y < landmarks[pip_joint].y else 0)
-        print(fingers)
     return fingers 
 
 def recognize_gesture(fingers):
@@ -49,12 +56,12 @@ def recognize_gesture(fingers):
         (0, 1, 0, 0, 0): "Указательный палец",
         (0, 1, 1, 0, 0): "Victory / Мир",
         (0, 1, 0, 0, 1): "Рок (Rock)",
+        (1, 1, 0, 0, 1): "Рок (Rock)",
         (1, 0, 0, 0, 0): "Большой палец вверх",
     }
     
     gesture = known_fingers.get(tuple(fingers))
     if gesture:
-        print(gesture)
         return gesture
     return f'Поднято пальцев: {total}'
 
@@ -124,9 +131,4 @@ def main():
  
  
 if __name__ == "__main__":
-    try:
-        main()
-    except Exception:
-        import traceback
-        traceback.print_exc()
-        input("Нажми Enter, чтобы закрыть окно...")
+    main()
