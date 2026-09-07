@@ -38,8 +38,9 @@ def count_fingers(landmarks, handedness_label):
         tip = TIP_IDS[i]
         pip_joint = tip - 2
         fingers.append(1 if landmarks[tip].y < landmarks[pip_joint].y else 0)
-        
-        return fingers
+        print(fingers)
+    return fingers 
+
 def recognize_gesture(fingers):
     total = sum(fingers)
     known_fingers = {
@@ -47,12 +48,13 @@ def recognize_gesture(fingers):
         (1, 1, 1, 1, 1): "Открытая ладонь",
         (0, 1, 0, 0, 0): "Указательный палец",
         (0, 1, 1, 0, 0): "Victory / Мир",
-        (1, 0, 0, 0, 1): "Рок (Rock)",
+        (0, 1, 0, 0, 1): "Рок (Rock)",
         (1, 0, 0, 0, 0): "Большой палец вверх",
     }
     
     gesture = known_fingers.get(tuple(fingers))
     if gesture:
+        print(gesture)
         return gesture
     return f'Поднято пальцев: {total}'
 
@@ -66,20 +68,22 @@ def draw_hand(frame, landmarks_px):
 
 def main():
     cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    time.sleep(0.5)
     
     if not cap.isOpened():
         print('Не удалось открыть камеру')
         return 
 
     frame_index = 0
-    
+    flag = True
     while True:
         ret, frame = cap.read()
         if not ret:
             print("Кадр не прочитан, пробуем ещё раз...")
-            break  
-        print(f"кадр прочитан: ret={ret}, frame is None: {frame is None}")
-        
+            break 
+        if flag:
+            print(f"кадр прочитан: ret={ret}, frame is None: {frame is None}")
+            flag = False
         frame = cv2.flip(frame,1)
         height, width, _ = frame.shape
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -105,8 +109,8 @@ def main():
                     text,
                     (10, text_y),
                     cv2.FONT_HERSHEY_SIMPLEX,
-                    1.2,
-                    (0,255,0),
+                    1.0,
+                    (0,0,0),
                     3
                 )
         cv2.imshow('Gesture Recognizer', frame)
@@ -114,7 +118,7 @@ def main():
         if cv2.waitKey(1) & 0xFF ==ord('q'):
             break
         
-        cap.release()
+    cap.release()
     cv2.destroyAllWindows()
     landmarker.close()
  
