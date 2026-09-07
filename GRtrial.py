@@ -68,7 +68,7 @@ def main():
     
     if not cap.isOpened():
         print('Не удалось открыть камеру')
-        continue 
+        return 
 
     frame_index = 0
     
