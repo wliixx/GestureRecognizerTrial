@@ -64,11 +64,11 @@ def draw_hand(frame, landmarks_px):
         
 
 def main():
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     
     if not cap.isOpened():
         print('Не удалось открыть камеру')
-        return
+        continue 
 
     frame_index = 0
     
