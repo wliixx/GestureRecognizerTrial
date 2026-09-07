@@ -66,7 +66,6 @@ def draw_hand(frame, landmarks_px):
 
 def main():
     cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-    time.sleep(0.5)
     
     if not cap.isOpened():
         print('Не удалось открыть камеру')
@@ -78,7 +77,7 @@ def main():
         ret, frame = cap.read()
         if not ret:
             print("Кадр не прочитан, пробуем ещё раз...")
-            continue   
+            break  
         print(f"кадр прочитан: ret={ret}, frame is None: {frame is None}")
         
         frame = cv2.flip(frame,1)
