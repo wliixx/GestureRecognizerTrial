@@ -115,7 +115,7 @@ def main():
         if cv2.waitKey(1) & 0xFF ==ord('q'):
             break
         
-    cap.release()
+        cap.release()
     cv2.destroyAllWindows()
     landmarker.close()
  
